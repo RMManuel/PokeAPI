@@ -1,13 +1,15 @@
-const API_URL="https://pokeapi.co/api/v2/pokemon"
+const API_URLnolimits=`https://pokeapi.co/api/v2/pokemon?limit=10000&offset=0`
+const API_URL=`https://pokeapi.co/api/v2/pokemon`
 
 document.addEventListener("DOMContentLoaded", ()=>{
   MostrarTodos();
   const containerMuestra = document.getElementById("contenedor-de-muestra");
+  const limit=20
+  const offset=0
 const btnBusqueda=document.getElementById("btnBuscar");
 btnBusqueda.addEventListener("click",async ()=>{
   let buscador=document.getElementById("buscador").value
   let cartas=await getJSONData(API_URL+"/"+buscador);
-  console.log(cartas);
   containerMuestra.innerHTML="";
   MostrarDatos(cartas)
 })
@@ -16,16 +18,14 @@ btnBusqueda.addEventListener("click",async ()=>{
 
 async function MostrarTodos() {
   try {
-    let pokemons = await getJSONData(API_URL);
-    console.log(pokemons);
+    let pokemons = await getJSONData(API_URLnolimits);
 
     let arregloPokemon = pokemons.data.results;
     for (let i = 0; i < arregloPokemon.length; i++) {
       let pokemon = arregloPokemon[i];
       let name = pokemon.name;
       let url = pokemon.url;
-      let info = await getJSONData(url); // Esperar la respuesta de getJSONData
-      console.log(info);
+      let info = await getJSONData(url); 
       MostrarDatos(info);
     }
   } catch (error) {
@@ -37,7 +37,6 @@ async function MostrarTodos() {
 async function MostrarDatos(array) {
   let pokemonId = array.data.id;
   let pokemonInfo = array.data;
-  console.log(pokemonId);
   let imagenSRC = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${pokemonId}.png`;
   
   let each = document.createElement("div");
@@ -51,20 +50,13 @@ async function MostrarDatos(array) {
   let tipos = pokemonInfo.types;
 
   info.innerHTML += `<h4><strong>${name}</strong>#${pokemonId}</h4>`;
-
-  for (const types of tipos) {
-    try {
-      const tipoInfo = await getJSONData(types.type.url);
-      console.log("Información del tipo:", tipoInfo);
-      
   
+  array.data.types.forEach(element => {
       info.innerHTML += `
-        <div class="tipo-pokemon"><h5>${tipoInfo.data.name}</h5></div>
+        <div class="tipo-pokemon"><h5>${element.type.name}</h5></div>
       `;
-    } catch (error) {
-      console.error("Error al obtener información del tipo:", error);
-    }
-  }
+  }); 
+  
 
   each.appendChild(img);
   each.appendChild(info);

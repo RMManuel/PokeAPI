@@ -30,6 +30,12 @@ body {
     border: 1px black solid;
     border-radius: 5px;
     margin: 2px;
+    transition: transform 0.3s, background-color 0.3s;
+}
+.containerXPokemon:hover {
+    transform: scale(1.1);
+    background-color: #9ef7f4;
+    cursor: pointer;
 }
 .img-pokemon{
     width: 150px 150px;
